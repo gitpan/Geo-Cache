@@ -55,7 +55,7 @@ LICENSE file included with this module.
 # }}}
 
 use vars qw(@FIELDS $VERSION $AUTOLOAD $CACHEID);
-$VERSION = '0.1';
+$VERSION = '0.20';
 @FIELDS = qw(lat lon time name desc url urlname sym type);
 
 # sub new {{{
@@ -145,6 +145,40 @@ sub xml {
 
     return $ret;
 } # }}}
+
+sub gpx {
+    my $self = shift;
+    return $self->xml;
+}
+
+sub loc {
+    my $self = shift;
+
+    my $ret = '<waypoint>';
+    $CACHEID++;
+    $ret .= '<name ="' . $$ . $CACHEID . '"><![CDATA[' .
+        $self->{name} . ']]></name>' . "\n";
+    $ret .= qq~<coord lat="$self->{lat}" lon="$self->{lon}"/>\n~;
+    $ret .= "<type>Geocache</type>\n";
+    $ret .= qq~<link text="Cache Details">$self->{name}</link>\n</waypoint>\n~;
+
+    return $ret;
+}
+
+sub gpsdrive {
+    my $self = shift;
+
+    my $name = $self->{name};
+    $name =~ s/\W/_/g;
+    $name =~ s/^_+//;
+    $name =~ s/_{2,}/_/g;
+    $name =~ s/^(.{15}).*/$1/;
+
+    my $ret =
+      $name . "\t" . $self->{lat} . "\t" . $self->{lon} . "\tGeocache\n";
+
+    return $ret;
+}
 
 1; 
 

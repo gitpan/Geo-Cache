@@ -6,7 +6,7 @@ use Time::CTime qw();
 
 BEGIN {
 	use vars qw ($VERSION);
-	$VERSION     = 0.01;
+	$VERSION     = 0.10;
 }
 
 # Docs {{{
@@ -115,6 +115,34 @@ qq|<bounds minlat="$minlat" minlon="$minlon" maxlat="$maxlat" maxlon="$maxlon" /
     return $ret;
 
 }    # }}}
+
+sub gpx {
+    my $self = shift;
+    return $self->xml;
+}
+
+sub loc {
+    my $self = shift;
+    my $ret = q|<?xml version="1.0" encoding="ISO-8859-1"?>
+<loc version="1.0" src="Groundspeak">
+|;
+    
+    foreach my $wpt ( @{ $self->{waypoints} } ) {
+        $ret .= $wpt->loc;
+    }
+
+    $ret .= q|</loc>|;
+    return $ret;
+}
+
+sub gpsdrive {
+    my $self = shift;
+    my $ret = '';
+    foreach my $wpt ( @{ $self->{waypoints} } ) {
+        $ret .= $wpt->gpsdrive;
+    }
+    return $ret;
+}
 
 1;
 
