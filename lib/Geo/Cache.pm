@@ -60,7 +60,7 @@ LICENSE file included with this module.
 # }}}
 
 use vars qw(@FIELDS $VERSION $AUTOLOAD $CACHEID);
-$VERSION = '0.21';
+$VERSION = '0.22';
 @FIELDS = qw(lat lon time name desc url urlname sym type);
 
 # sub new {{{

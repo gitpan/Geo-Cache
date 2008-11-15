@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Geo-Cache
-version:             0.10
+version:             0.11
 abstract:            Classes for dealing with GeoCaches and the related data files.
 license:             ~
 author:              
