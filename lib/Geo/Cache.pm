@@ -37,6 +37,11 @@ fields are valid.
 Methods are provide for various of the fields that require special
 treatment.
 
+Three output methods are provided -- C<gpx>, C<gpsdrive>, and C<loc>,
+for outputting a single waypoint in one of these three formats. These
+can be used in conjunction with the C<Geo::Gpx> module to produce files
+of those formats.
+
 =head1 AUTHOR
 
 	Rich Bowen
@@ -55,10 +60,26 @@ LICENSE file included with this module.
 # }}}
 
 use vars qw(@FIELDS $VERSION $AUTOLOAD $CACHEID);
-$VERSION = '0.20';
+$VERSION = '0.21';
 @FIELDS = qw(lat lon time name desc url urlname sym type);
 
 # sub new {{{
+
+=head2 new
+
+Create a new C<Geo::Cache> object.
+
+    my $wpt = Geo::Cache->new(
+        lat  => '37.99815',
+        lon  => '-85.302017',
+        time => $time,
+        name => 'GCGVW8',
+        desc => 'Neither Hill nor Dale',
+        sym  => 'geocache',
+        type => 'Geocache|Traditional Cache',
+    );
+
+=cut
 
 sub new {
     my $class = shift;
@@ -81,6 +102,18 @@ sub new {
 
 # AUTOLOADER {{{
 
+=head2 Data methods
+
+A data method is provided for each of the valid fields within a Cache
+object. Calling the method with no argument returns the value of that
+attribute. Calling the method with an argument changes the value of that
+attribute to that value.
+
+ my $name = $cache->name;
+ $cache->lon(-84.8934);
+
+=cut
+
 sub AUTOLOAD {
     my $self = shift;
     my $val = shift;
@@ -98,7 +131,18 @@ sub AUTOLOAD {
 
 # sub xml {{{
 
-sub xml {
+=head2 xml/gpx
+
+Returns a blob of XML which constitutes one <wpt> block of a
+Geocaching.com-style gpx data file. You'll generally not use this
+method by itself, but will call the C<gpx> method from the C<Geo::Gpx>
+module to generate the entire file of one or more waypoints.
+
+C<xml> is an alias for the C<gpx> method.
+
+=cut
+
+sub gpx {
     my $self = shift;
     my @fields = @FIELDS;
     shift @fields for (1..2); # lat and lon
@@ -144,12 +188,12 @@ sub xml {
     $ret .= "</wpt>\n";
 
     return $ret;
-} # }}}
-
-sub gpx {
-    my $self = shift;
-    return $self->xml;
 }
+
+sub xml {
+    my $self = shift;
+    return $self->gpx;
+} # }}}
 
 sub loc {
     my $self = shift;
